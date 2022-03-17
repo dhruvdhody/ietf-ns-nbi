@@ -1,0 +1,433 @@
+module: ietf-network-slice-types
+
+  grouping status-params
+    +-- status
+       +-- admin-enabled?   boolean
+       +--ro oper-status?     operational-type
+  grouping ns-match-criteria
+    +-- ns-match-criteria
+       +-- ns-match-criterion* [index]
+          +-- index?                           uint32
+          +-- match-type?                      identityref
+          +-- values* [index]
+          |  +-- index?   uint8
+          |  +-- value?   string
+          +-- target-ns-connection-group-id?   leafref
+  grouping ns-sles
+    +-- security*               identityref
+    +-- isolation?              identityref
+    +-- max-occupancy-level?    uint8
+    +-- mtu                     uint16
+    +-- steering-constraints
+       +-- path-constraints
+       +-- service-function
+  grouping ns-metric-bounds
+    +-- ns-metric-bounds
+       +-- ns-metric-bound* [metric-type]
+          +-- metric-type?         identityref
+          +-- metric-unit          string
+          +-- value-description?   string
+          +-- bound?               uint64
+  grouping ep-peering
+    +-- ep-peering
+       +-- protocol* [protocol-type]
+          +-- protocol-type?   identityref
+          +-- attribute* [index]
+             +-- index?                   uint8
+             +-- attribute-description?   string
+             +-- value?                   string
+  grouping ep-network-access-param
+    +-- network-access-id?                    string
+    +-- network-access-description?           string
+    +-- network-access-node-id?               string
+    +-- network-access-tp-id?                 string
+    +-- network-access-tp-ip-address?         inet:ip-address
+    +-- network-access-tp-ip-prefix-length?   uint8
+    +-- network-access-qos-policy-name?       string
+    +-- mtu                                   uint16
+    +-- network-access-tags
+       +-- network-access-tag* [index]
+          +-- index?                      uint32
+          +-- network-access-tag-type?    identityref
+          +-- network-access-tag-value?   string
+  grouping ep-network-access-points
+    +-- ep-network-access-points
+       +-- ep-network-access-point* [network-access-id]
+          +-- network-access-id?                    string
+          +-- network-access-description?           string
+          +-- network-access-node-id?               string
+          +-- network-access-tp-id?                 string
+          +-- network-access-tp-ip-address?         inet:ip-address
+          +-- network-access-tp-ip-prefix-length?   uint8
+          +-- network-access-qos-policy-name?       string
+          +-- mtu                                   uint16
+          +-- network-access-tags
+          |  +-- network-access-tag* [index]
+          |     +-- index?                      uint32
+          |     +-- network-access-tag-type?    identityref
+          |     +-- network-access-tag-value?   string
+          +-- ns-match-criteria
+          |  +-- ns-match-criterion* [index]
+          |     +-- index?                           uint32
+          |     +-- match-type?                      identityref
+          |     +-- values* [index]
+          |     |  +-- index?   uint8
+          |     |  +-- value?   string
+          |     +-- target-ns-connection-group-id?   leafref
+          +-- ep-peering
+          |  +-- protocol* [protocol-type]
+          |     +-- protocol-type?   identityref
+          |     +-- attribute* [index]
+          |        +-- index?                   uint8
+          |        +-- attribute-description?   string
+          |        +-- value?                   string
+          +-- incoming-rate-limits
+          |  +-- cir?   uint64
+          |  +-- cbs?   uint64
+          |  +-- eir?   uint64
+          |  +-- ebs?   uint64
+          |  +-- pir?   uint64
+          |  +-- pbs?   uint64
+          +-- outgoing-rate-limits
+             +-- cir?   uint64
+             +-- cbs?   uint64
+             +-- eir?   uint64
+             +-- ebs?   uint64
+             +-- pir?   uint64
+             +-- pbs?   uint64
+  grouping ep-monitoring-metrics
+    +--ro ep-monitoring
+       +--ro incoming-utilized-bandwidth?   te-types:te-bandwidth
+       +--ro incoming-bw-utilization        decimal64
+       +--ro outgoing-utilized-bandwidth?   te-types:te-bandwidth
+       +--ro outgoing-bw-utilization        decimal64
+  grouping ns-connection-monitoring-metrics
+    +-- one-way-min-delay?         uint32
+    +-- one-way-max-delay?         uint32
+    +-- one-way-delay-variation?   uint32
+    +-- one-way-packet-loss?       decimal64
+    +-- two-way-min-delay?         uint32
+    +-- two-way-max-delay?         uint32
+    +-- two-way-delay-variation?   uint32
+    +-- two-way-packet-loss?       decimal64
+  grouping geolocation-container
+    +-- location
+       +-- altitude?    int64
+       +-- latitude?    decimal64
+       +-- longitude?   decimal64
+  grouping bw-rate-limits
+    +-- cir?   uint64
+    +-- cbs?   uint64
+    +-- eir?   uint64
+    +-- ebs?   uint64
+    +-- pir?   uint64
+    +-- pbs?   uint64
+  grouping ns-rate-limit
+    +-- incoming-rate-limits
+    |  +-- cir?   uint64
+    |  +-- cbs?   uint64
+    |  +-- eir?   uint64
+    |  +-- ebs?   uint64
+    |  +-- pir?   uint64
+    |  +-- pbs?   uint64
+    +-- outgoing-rate-limits
+       +-- cir?   uint64
+       +-- cbs?   uint64
+       +-- eir?   uint64
+       +-- ebs?   uint64
+       +-- pir?   uint64
+       +-- pbs?   uint64
+  grouping endpoint-param
+    +-- ep-id?            string
+    +-- ep-description?   string
+    +-- location
+    |  +-- altitude?    int64
+    |  +-- latitude?    decimal64
+    |  +-- longitude?   decimal64
+    +-- node-id?          string
+    +-- ep-ip?            inet:ip-address
+  grouping endpoint
+    +-- ep-id?                      string
+    +-- ep-description?             string
+    +-- location
+    |  +-- altitude?    int64
+    |  +-- latitude?    decimal64
+    |  +-- longitude?   decimal64
+    +-- node-id?                    string
+    +-- ep-ip?                      inet:ip-address
+    +-- ns-match-criteria
+    |  +-- ns-match-criterion* [index]
+    |     +-- index?                           uint32
+    |     +-- match-type?                      identityref
+    |     +-- values* [index]
+    |     |  +-- index?   uint8
+    |     |  +-- value?   string
+    |     +-- target-ns-connection-group-id?   leafref
+    +-- ep-peering
+    |  +-- protocol* [protocol-type]
+    |     +-- protocol-type?   identityref
+    |     +-- attribute* [index]
+    |        +-- index?                   uint8
+    |        +-- attribute-description?   string
+    |        +-- value?                   string
+    +-- ep-network-access-points
+    |  +-- ep-network-access-point* [network-access-id]
+    |     +-- network-access-id?                    string
+    |     +-- network-access-description?           string
+    |     +-- network-access-node-id?               string
+    |     +-- network-access-tp-id?                 string
+    |     +-- network-access-tp-ip-address?         inet:ip-address
+    |     +-- network-access-tp-ip-prefix-length?   uint8
+    |     +-- network-access-qos-policy-name?       string
+    |     +-- mtu                                   uint16
+    |     +-- network-access-tags
+    |     |  +-- network-access-tag* [index]
+    |     |     +-- index?                      uint32
+    |     |     +-- network-access-tag-type?    identityref
+    |     |     +-- network-access-tag-value?   string
+    |     +-- ns-match-criteria
+    |     |  +-- ns-match-criterion* [index]
+    |     |     +-- index?                           uint32
+    |     |     +-- match-type?                      identityref
+    |     |     +-- values* [index]
+    |     |     |  +-- index?   uint8
+    |     |     |  +-- value?   string
+    |     |     +-- target-ns-connection-group-id?   leafref
+    |     +-- ep-peering
+    |     |  +-- protocol* [protocol-type]
+    |     |     +-- protocol-type?   identityref
+    |     |     +-- attribute* [index]
+    |     |        +-- index?                   uint8
+    |     |        +-- attribute-description?   string
+    |     |        +-- value?                   string
+    |     +-- incoming-rate-limits
+    |     |  +-- cir?   uint64
+    |     |  +-- cbs?   uint64
+    |     |  +-- eir?   uint64
+    |     |  +-- ebs?   uint64
+    |     |  +-- pir?   uint64
+    |     |  +-- pbs?   uint64
+    |     +-- outgoing-rate-limits
+    |        +-- cir?   uint64
+    |        +-- cbs?   uint64
+    |        +-- eir?   uint64
+    |        +-- ebs?   uint64
+    |        +-- pir?   uint64
+    |        +-- pbs?   uint64
+    +-- incoming-rate-limits
+    |  +-- cir?   uint64
+    |  +-- cbs?   uint64
+    |  +-- eir?   uint64
+    |  +-- ebs?   uint64
+    |  +-- pir?   uint64
+    |  +-- pbs?   uint64
+    +-- outgoing-rate-limits
+    |  +-- cir?   uint64
+    |  +-- cbs?   uint64
+    |  +-- eir?   uint64
+    |  +-- ebs?   uint64
+    |  +-- pir?   uint64
+    |  +-- pbs?   uint64
+    +-- status
+    |  +-- admin-enabled?   boolean
+    |  +--ro oper-status?     operational-type
+    +--ro ep-monitoring
+       +--ro incoming-utilized-bandwidth?   te-types:te-bandwidth
+       +--ro incoming-bw-utilization        decimal64
+       +--ro outgoing-utilized-bandwidth?   te-types:te-bandwidth
+       +--ro outgoing-bw-utilization        decimal64
+  grouping ns-connection
+    +-- ns-connection* [ns-connection-id]
+       +-- ns-connection-id?           uint32
+       +-- ns-connectivity-type?       identityref
+       +-- src-nse*                    leafref
+       +-- dest-nse*                   leafref
+       +-- (ns-slo-sle-policy)?
+       |  +--:(standard)
+       |  |  +-- slo-sle-template?     leafref
+       |  +--:(custom)
+       |     +-- slo-sle-policy
+       |        +-- policy-description?     string
+       |        +-- ns-metric-bounds
+       |        |  +-- ns-metric-bound* [metric-type]
+       |        |     +-- metric-type?         identityref
+       |        |     +-- metric-unit          string
+       |        |     +-- value-description?   string
+       |        |     +-- bound?               uint64
+       |        +-- security*               identityref
+       |        +-- isolation?              identityref
+       |        +-- max-occupancy-level?    uint8
+       |        +-- mtu                     uint16
+       |        +-- steering-constraints
+       |           +-- path-constraints
+       |           +-- service-function
+       +--ro ns-connection-monitoring
+          +--ro one-way-min-delay?         uint32
+          +--ro one-way-max-delay?         uint32
+          +--ro one-way-delay-variation?   uint32
+          +--ro one-way-packet-loss?       decimal64
+          +--ro two-way-min-delay?         uint32
+          +--ro two-way-max-delay?         uint32
+          +--ro two-way-delay-variation?   uint32
+          +--ro two-way-packet-loss?       decimal64
+  grouping ns-connection-group
+    +-- ns-connection-group-id?           string
+    +-- (ns-slo-sle-policy)?
+    |  +--:(standard)
+    |  |  +-- slo-sle-template?           leafref
+    |  +--:(custom)
+    |     +-- slo-sle-policy
+    |        +-- policy-description?     string
+    |        +-- ns-metric-bounds
+    |        |  +-- ns-metric-bound* [metric-type]
+    |        |     +-- metric-type?         identityref
+    |        |     +-- metric-unit          string
+    |        |     +-- value-description?   string
+    |        |     +-- bound?               uint64
+    |        +-- security*               identityref
+    |        +-- isolation?              identityref
+    |        +-- max-occupancy-level?    uint8
+    |        +-- mtu                     uint16
+    |        +-- steering-constraints
+    |           +-- path-constraints
+    |           +-- service-function
+    +-- ns-connection* [ns-connection-id]
+    |  +-- ns-connection-id?           uint32
+    |  +-- ns-connectivity-type?       identityref
+    |  +-- src-nse*                    leafref
+    |  +-- dest-nse*                   leafref
+    |  +-- (ns-slo-sle-policy)?
+    |  |  +--:(standard)
+    |  |  |  +-- slo-sle-template?     leafref
+    |  |  +--:(custom)
+    |  |     +-- slo-sle-policy
+    |  |        +-- policy-description?     string
+    |  |        +-- ns-metric-bounds
+    |  |        |  +-- ns-metric-bound* [metric-type]
+    |  |        |     +-- metric-type?         identityref
+    |  |        |     +-- metric-unit          string
+    |  |        |     +-- value-description?   string
+    |  |        |     +-- bound?               uint64
+    |  |        +-- security*               identityref
+    |  |        +-- isolation?              identityref
+    |  |        +-- max-occupancy-level?    uint8
+    |  |        +-- mtu                     uint16
+    |  |        +-- steering-constraints
+    |  |           +-- path-constraints
+    |  |           +-- service-function
+    |  +--ro ns-connection-monitoring
+    |     +--ro one-way-min-delay?         uint32
+    |     +--ro one-way-max-delay?         uint32
+    |     +--ro one-way-delay-variation?   uint32
+    |     +--ro one-way-packet-loss?       decimal64
+    |     +--ro two-way-min-delay?         uint32
+    |     +--ro two-way-max-delay?         uint32
+    |     +--ro two-way-delay-variation?   uint32
+    |     +--ro two-way-packet-loss?       decimal64
+    +--ro ns-connection-group-monitoring
+       +--ro one-way-min-delay?         uint32
+       +--ro one-way-max-delay?         uint32
+       +--ro one-way-delay-variation?   uint32
+       +--ro one-way-packet-loss?       decimal64
+       +--ro two-way-min-delay?         uint32
+       +--ro two-way-max-delay?         uint32
+       +--ro two-way-delay-variation?   uint32
+       +--ro two-way-packet-loss?       decimal64
+  grouping ns-connection-groups
+    +-- ns-connection-groups
+       +-- ns-connection-group* [ns-connection-group-id]
+          +-- ns-connection-group-id?           string
+          +-- (ns-slo-sle-policy)?
+          |  +--:(standard)
+          |  |  +-- slo-sle-template?           leafref
+          |  +--:(custom)
+          |     +-- slo-sle-policy
+          |        +-- policy-description?     string
+          |        +-- ns-metric-bounds
+          |        |  +-- ns-metric-bound* [metric-type]
+          |        |     +-- metric-type?         identityref
+          |        |     +-- metric-unit          string
+          |        |     +-- value-description?   string
+          |        |     +-- bound?               uint64
+          |        +-- security*               identityref
+          |        +-- isolation?              identityref
+          |        +-- max-occupancy-level?    uint8
+          |        +-- mtu                     uint16
+          |        +-- steering-constraints
+          |           +-- path-constraints
+          |           +-- service-function
+          +-- ns-connection* [ns-connection-id]
+          |  +-- ns-connection-id?           uint32
+          |  +-- ns-connectivity-type?       identityref
+          |  +-- src-nse*                    leafref
+          |  +-- dest-nse*                   leafref
+          |  +-- (ns-slo-sle-policy)?
+          |  |  +--:(standard)
+          |  |  |  +-- slo-sle-template?     leafref
+          |  |  +--:(custom)
+          |  |     +-- slo-sle-policy
+          |  |        +-- policy-description?     string
+          |  |        +-- ns-metric-bounds
+          |  |        |  +-- ns-metric-bound* [metric-type]
+          |  |        |     +-- metric-type?         identityref
+          |  |        |     +-- metric-unit          string
+          |  |        |     +-- value-description?   string
+          |  |        |     +-- bound?               uint64
+          |  |        +-- security*               identityref
+          |  |        +-- isolation?              identityref
+          |  |        +-- max-occupancy-level?    uint8
+          |  |        +-- mtu                     uint16
+          |  |        +-- steering-constraints
+          |  |           +-- path-constraints
+          |  |           +-- service-function
+          |  +--ro ns-connection-monitoring
+          |     +--ro one-way-min-delay?         uint32
+          |     +--ro one-way-max-delay?         uint32
+          |     +--ro one-way-delay-variation?   uint32
+          |     +--ro one-way-packet-loss?       decimal64
+          |     +--ro two-way-min-delay?         uint32
+          |     +--ro two-way-max-delay?         uint32
+          |     +--ro two-way-delay-variation?   uint32
+          |     +--ro two-way-packet-loss?       decimal64
+          +--ro ns-connection-group-monitoring
+             +--ro one-way-min-delay?         uint32
+             +--ro one-way-max-delay?         uint32
+             +--ro one-way-delay-variation?   uint32
+             +--ro one-way-packet-loss?       decimal64
+             +--ro two-way-min-delay?         uint32
+             +--ro two-way-max-delay?         uint32
+             +--ro two-way-delay-variation?   uint32
+             +--ro two-way-packet-loss?       decimal64
+  grouping slice-template
+    +-- ns-slo-sle-templates
+       +-- ns-slo-sle-template* [id]
+          +-- id?                     string
+          +-- template-description?   string
+  grouping ns-slo-sle-policy
+    +-- (ns-slo-sle-policy)?
+       +--:(standard)
+       |  +-- slo-sle-template?   leafref
+       +--:(custom)
+          +-- slo-sle-policy
+             +-- policy-description?     string
+             +-- ns-metric-bounds
+             |  +-- ns-metric-bound* [metric-type]
+             |     +-- metric-type?         identityref
+             |     +-- metric-unit          string
+             |     +-- value-description?   string
+             |     +-- bound?               uint64
+             +-- security*               identityref
+             +-- isolation?              identityref
+             +-- max-occupancy-level?    uint8
+             +-- mtu                     uint16
+             +-- steering-constraints
+                +-- path-constraints
+                +-- service-function
+  grouping ns-properties
+    +-- ns-id?            string
+    +-- ns-description?   string
+    +-- ns-tags
+       +-- ns-tag* [index]
+          +-- index?          uint32
+          +-- ns-tag-type?    identityref
+          +-- ns-tag-value?   string
