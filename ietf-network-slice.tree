@@ -173,11 +173,7 @@ module: ietf-network-slice
               |  |        +--rw policy-description?     string
               |  |        +--rw ns-metric-bounds
               |  |        |  +--rw ns-metric-bound* [metric-type]
-              |  |        |     +--rw metric-type
-              |  |        |     |       identityref
-              |  |        |     +--rw metric-unit          string
-              |  |        |     +--rw value-description?   string
-              |  |        |     +--rw bound?               uint64
+              |  |        |        ...
               |  |        +--rw security*               identityref
               |  |        +--rw isolation?              identityref
               |  |        +--rw max-occupancy-level?    uint8
