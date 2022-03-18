@@ -1,0 +1,111 @@
+module: ietf-l3sm-ins
+
+  augment /l3vpn-svc:l3vpn-svc/l3vpn-svc:vpn-services
+            /l3vpn-svc:vpn-service:
+    +--rw ins!
+       +--rw ns-id?                    string
+       +--rw ns-description?           string
+       +--rw ns-tags
+       |  +--rw ns-tag* [index]
+       |     +--rw index           uint32
+       |     +--rw ns-tag-type?    identityref
+       |     +--rw ns-tag-value?   string
+       +--rw (ns-slo-sle-policy)?
+       |  +--:(standard)
+       |  |  +--rw slo-sle-template?   leafref
+       |  +--:(custom)
+       |     +--rw slo-sle-policy
+       |        +--rw policy-description?     string
+       |        +--rw ns-metric-bounds
+       |        |  +--rw ns-metric-bound* [metric-type]
+       |        |     +--rw metric-type          identityref
+       |        |     +--rw metric-unit          string
+       |        |     +--rw value-description?   string
+       |        |     +--rw bound?               uint64
+       |        +--rw security*               identityref
+       |        +--rw isolation?              identityref
+       |        +--rw max-occupancy-level?    uint8
+       |        +--rw mtu                     uint16
+       |        +--rw steering-constraints
+       |           +--rw path-constraints
+       |           +--rw service-function
+       +--rw status
+       |  +--rw admin-enabled?   boolean
+       |  +--ro oper-status?     operational-type
+       +--rw ns-endpoints
+       |  +--rw ns-endpoint* [ep-id]
+       |     +--rw ep-id                string
+       |     +--rw ep-description?      string
+       |     +--rw location
+       |     |  +--rw altitude?    int64
+       |     |  +--rw latitude?    decimal64
+       |     |  +--rw longitude?   decimal64
+       |     +--rw node-id?             string
+       |     +--rw ep-ip?               inet:ip-address
+       |     +--rw ns-match-criteria
+       |     |  +--rw ns-match-criterion* [index]
+       |     |     +--rw index                            uint32
+       |     |     +--rw match-type?                      identityref
+       |     |     +--rw values* [index]
+       |     |     |  +--rw index    uint8
+       |     |     |  +--rw value?   string
+       |     |     +--rw target-ns-connection-group-id?   leafref
+       |     +--rw site-id?
+       |             -> /l3vpn-svc:l3vpn-svc/sites/site/site-id
+       +--rw ns-connection* [ns-connection-id]
+          +--rw ns-connection-id            uint32
+          +--rw ns-connectivity-type?       identityref
+          +--rw src-nse*                    leafref
+          +--rw dest-nse*                   leafref
+          +--rw (ns-slo-sle-policy)?
+          |  +--:(standard)
+          |  |  +--rw slo-sle-template?     leafref
+          |  +--:(custom)
+          |     +--rw slo-sle-policy
+          |        +--rw policy-description?     string
+          |        +--rw ns-metric-bounds
+          |        |  +--rw ns-metric-bound* [metric-type]
+          |        |     +--rw metric-type          identityref
+          |        |     +--rw metric-unit          string
+          |        |     +--rw value-description?   string
+          |        |     +--rw bound?               uint64
+          |        +--rw security*               identityref
+          |        +--rw isolation?              identityref
+          |        +--rw max-occupancy-level?    uint8
+          |        +--rw mtu                     uint16
+          |        +--rw steering-constraints
+          |           +--rw path-constraints
+          |           +--rw service-function
+          +--ro ns-connection-monitoring
+             +--ro one-way-min-delay?         uint32
+             +--ro one-way-max-delay?         uint32
+             +--ro one-way-delay-variation?   uint32
+             +--ro one-way-packet-loss?       decimal64
+             +--ro two-way-min-delay?         uint32
+             +--ro two-way-max-delay?         uint32
+             +--ro two-way-delay-variation?   uint32
+             +--ro two-way-packet-loss?       decimal64
+  augment /l3vpn-svc:l3vpn-svc/l3vpn-svc:sites/l3vpn-svc:site
+            /l3vpn-svc:site-network-accesses
+            /l3vpn-svc:site-network-access/l3vpn-svc:vpn-attachment:
+    +--rw network-access-id?                    string
+    +--rw network-access-description?           string
+    +--rw network-access-node-id?               string
+    +--rw network-access-tp-id?                 string
+    +--rw network-access-tp-ip-address?         inet:ip-address
+    +--rw network-access-tp-ip-prefix-length?   uint8
+    +--rw network-access-qos-policy-name?       string
+    +--rw mtu                                   uint16
+    +--rw network-access-tags
+    |  +--rw network-access-tag* [index]
+    |     +--rw index                       uint32
+    |     +--rw network-access-tag-type?    identityref
+    |     +--rw network-access-tag-value?   string
+    +--rw ns-match-criteria
+       +--rw ns-match-criterion* [index]
+          +--rw index                            uint32
+          +--rw match-type?                      identityref
+          +--rw values* [index]
+          |  +--rw index    uint8
+          |  +--rw value?   string
+          +--rw target-ns-connection-group-id?   leafref
