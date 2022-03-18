@@ -65,7 +65,9 @@ module: ietf-l3sm-ins
              +--ro two-way-max-delay?         uint32
              +--ro two-way-delay-variation?   uint32
              +--ro two-way-packet-loss?       decimal64
-  augment /l3vpn-svc:l3vpn-svc/l3vpn-svc:sites/l3vpn-svc:site:
+  augment /l3vpn-svc:l3vpn-svc/l3vpn-svc:sites/l3vpn-svc:site
+            /l3vpn-svc:vpn-policies/l3vpn-svc:vpn-policy
+            /l3vpn-svc:entries/l3vpn-svc:vpn:
     +--rw ep-id?               string
     +--rw ep-description?      string
     +--rw location
@@ -84,7 +86,7 @@ module: ietf-l3sm-ins
           +--rw target-ns-connection-group-id?   leafref
   augment /l3vpn-svc:l3vpn-svc/l3vpn-svc:sites/l3vpn-svc:site
             /l3vpn-svc:site-network-accesses
-            /l3vpn-svc:site-network-access:
+            /l3vpn-svc:site-network-access/l3vpn-svc:vpn-attachment:
     +--rw network-access-id?                    string
     +--rw network-access-description?           string
     +--rw network-access-node-id?               string
