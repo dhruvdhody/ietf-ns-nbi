@@ -77,7 +77,9 @@ module ietf-l3sm-ins {
     }
   }
 
-  augment "/l3vpn-svc:l3vpn-svc/l3vpn-svc:sites/l3vpn-svc:site" {
+  augment "/l3vpn-svc:l3vpn-svc/l3vpn-svc:sites/l3vpn-svc:site"
+        + "/l3vpn-svc:vpn-policies/l3vpn-svc:vpn-policy"
+        + "/l3vpn-svc:entries/l3vpn-svc:vpn" {
     description
       "This augment the VPN site with properties similar to SDP";
     uses ietf-nst:endpoint-param;
@@ -86,7 +88,8 @@ module ietf-l3sm-ins {
 
   augment "/l3vpn-svc:l3vpn-svc/l3vpn-svc:sites/l3vpn-svc:site"
         + "/l3vpn-svc:site-network-accesses"
-        + "/l3vpn-svc:site-network-access" {
+        + "/l3vpn-svc:site-network-access"
+        + "/l3vpn-svc:vpn-attachment" {
     description
       "This augment is only valid for TE mapping of L3SM network-access
        to TE endpoints";
